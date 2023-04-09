@@ -7,9 +7,11 @@ namespace ariel {
 
 Player::Player(const std::string& name) : name(name) {}
 
+
 const std::string Player::getName() const {
     return name;
 }
+
 
 int Player::stacksize() const {
     return stack.size();
@@ -38,4 +40,4 @@ void Player::addCards(const std::vector<Card>& cards) {
     cardsTaken.insert(cardsTaken.end(), cards.begin(), cards.end());
 }
 
-} // namespace ariel
+}

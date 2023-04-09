@@ -9,7 +9,6 @@
 namespace ariel {
 
 Game::Game(Player& p1ayer1, Player& player2) : player1(p1ayer1), player2(player2) {
-    // create a shuffled deck of cards
     std::vector<Card> cards;
     for (int i = 1; i <= 13; i++) {
         cards.push_back(Card(Suit::HEARTS, static_cast<Rank>(i)));
@@ -53,17 +52,15 @@ void Game::playTurn() {
         }
         else {
             std::vector<Card> pile = {card1, card2};
-            while (card1 == card2) {
-                if (player1.stacksize() == 0 || player2.stacksize() == 0) {
-                    break;
-                }
-                pile.push_back(player1.removeCard());
-                pile.push_back(player2.removeCard());
-                card1 = player1.removeCard();
-                card2 = player2.removeCard();
-                pile.push_back(card1);
-                pile.push_back(card2);
-            }
+         while (card1 == card2 && player1.stacksize() > 0 && player2.stacksize() > 0) {
+             pile.push_back(player1.removeCard());
+             pile.push_back(player2.removeCard());
+             card1 = player1.removeCard();
+             card2 = player2.removeCard();
+             pile.push_back(card1);
+            pile.push_back(card2);
+}
+
             if (card1 > card2) {
                 player1.addCards(pile);
             }
@@ -86,15 +83,21 @@ void Game::playAll() {
     }
 }
 
+
 void Game::printWiner() const {
-    if (player1.stacksize() > player2.stacksize()) {
+    int p1StackSize = player1.stacksize();
+    int p2StackSize = player2.stacksize();
+    if (p1StackSize > p2StackSize) {
         std::cout << player1.getName() << " wins!" << std::endl;
-    } if (player2.stacksize() > player1.stacksize()) {
+    } else if (p2StackSize > p1StackSize) {
         std::cout << player2.getName() << " wins!" << std::endl;
     } else {
         std::cout << "It's a tie!" << std::endl;
     }
 }
+
+
+
 
 void Game::printLog() const {
     for (auto& turn : log) {

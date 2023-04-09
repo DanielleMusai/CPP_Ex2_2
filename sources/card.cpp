@@ -77,11 +77,27 @@ std::string Card::toString() const {
 }
 
 bool Card::operator>(const Card& other) const {
-    return this->rank_ > other.rank_;
+    if (this->rank_ == Rank::TWO && other.rank_ == Rank::ACE) {
+        return true;
+    }
+    else if (this->rank_ == Rank::ACE && other.rank_ == Rank::TWO) {
+        return false;
+    }
+    else {
+        return this->rank_ > other.rank_;
+    }
 }
 
 bool Card::operator<(const Card& other) const {
-    return this->rank_ < other.rank_;
+    if (this->rank_ == Rank::TWO && other.rank_ == Rank::ACE) {
+        return false;
+    }
+    else if (this->rank_ == Rank::ACE && other.rank_ == Rank::TWO) {
+        return true;
+    }
+    else {
+        return this->rank_ < other.rank_;
+    }
 }
 
 bool Card::operator==(const Card& other) const {

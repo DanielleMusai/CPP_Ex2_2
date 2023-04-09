@@ -27,6 +27,6 @@ public:
     void printPlayerStats() const;
 };
 
-} // namespace ariel
+} 
 
-#endif // GAME_HPP
+#endif 
