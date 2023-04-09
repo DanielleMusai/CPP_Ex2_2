@@ -1,23 +1,49 @@
-#pragma once
+#ifndef CARD_HPP
+#define CARD_HPP
 
 #include <string>
+#include <vector>
 
 namespace ariel {
 
+enum class Suit {
+    HEARTS,
+    DIAMONDS,
+    CLUBS,
+    SPADES
+};
+
+enum class Rank{
+    ACE = 1,
+    TWO,
+    THREE,
+    FOUR,
+    FIVE,
+    SIX,
+    SEVEN,
+    EIGHT,
+    NINE,
+    TEN,
+    JACK,
+    QUEEN,
+    KING
+};
+
     class Card {
-
-        private:
-            std::string suit;
-            std::string rank;
-            int value;
-
-        public:
-            Card(std::string suit, std::string rank, int value);
-            std::string getSuit() const;
-            std::string getRank() const;
-            int getValue() const;
+     public:
+            Card(Suit suit, Rank rank);
+            Suit getSuit() const;
+            Rank getRank() const;
+            std::string toString() const;
+            bool operator>(const Card& other) const;
             bool operator<(const Card& other) const;
+            bool operator==(const Card& other) const;
+            friend std::ostream& operator<<(std::ostream& outputStream, const Card& card);
+     private:
+           Suit suit_;
+           Rank rank_;
+};
+    }
 
-    };
 
-}
+#endif

@@ -1,21 +1,41 @@
-#include <iostream>
 #include "player.hpp"
+#include <algorithm>
+#include <stdexcept>
+#include <random>
 
-namespace ariel
-{
+namespace ariel {
 
-Player::Player(std::string name)
-{
-this->name = name;
-}
-int Player::stacksize()
-{
-    return 0;
-}
+Player::Player(const std::string& name) : name(name) {}
 
-int Player::cardesTaken()
-{
-    return 0;
+const std::string Player::getName() const {
+    return name;
 }
 
+int Player::stacksize() const {
+    return stack.size();
 }
+
+int Player::cardesTaken() const {
+    return cardsTaken.size();
+}
+
+void Player::addCard(const Card& card) {
+    stack.push_back(card);
+}
+
+Card Player::removeCard() {
+    if (stack.empty()) {
+        throw std::runtime_error("Player has no more cards to play.");
+    }
+    Card card = stack.back();
+    stack.pop_back();
+    return card;
+}
+
+
+
+void Player::addCards(const std::vector<Card>& cards) {
+    cardsTaken.insert(cardsTaken.end(), cards.begin(), cards.end());
+}
+
+} // namespace ariel

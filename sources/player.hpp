@@ -1,25 +1,26 @@
-#ifndef PLAYER_H
-#define PLAYER_H
+#ifndef PLAYER_HPP
+#define PLAYER_HPP
 
 #include <vector>
-#include <string>
 #include "card.hpp"
 
+namespace ariel {
 
-namespace ariel
-{
-class Player
-{
+class Player {
 private:
     std::string name;
+    std::vector<Card> stack;
+    std::vector<Card> cardsTaken;
 public:
-    Player(std::string name);
-    Player(){}
-    int stacksize();
-    int cardesTaken();
-//player::~player()
-//{
-//}
+    Player(const std::string& name);
+    const std::string getName() const;
+    int stacksize() const;
+    int cardesTaken() const;
+    void addCard(const Card& card);
+    Card removeCard();
+    void addCards(const std::vector<Card>& cards);
 };
-}
-#endif /* PLAYER_H */
+
+} // namespace ariel
+
+#endif // PLAYER_HPP
