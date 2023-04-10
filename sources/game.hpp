@@ -14,6 +14,7 @@ class Game {
 private:
     Player& player1;
     Player& player2;
+    int draw;
     std::deque<Card> deck;
     std::vector<std::pair<Card, Card>> log;
 public:

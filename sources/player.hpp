@@ -19,8 +19,9 @@ public:
     void addCard(const Card& card);
     Card removeCard();
     void addCards(const std::vector<Card>& cards);
+    
 };
 
-} // namespace ariel
+} 
 
-#endif // PLAYER_HPP
+#endif 

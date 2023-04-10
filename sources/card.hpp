@@ -26,7 +26,7 @@ enum class Rank{
     JACK,
     QUEEN,
     KING,
-    ACE
+    ACE = 1
 };
 
     class Card {

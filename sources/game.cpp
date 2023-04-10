@@ -8,7 +8,7 @@
 
 namespace ariel {
 
-Game::Game(Player& p1ayer1, Player& player2) : player1(p1ayer1), player2(player2) {
+Game::Game(Player& p1, Player& p2) : player1(p1), player2(p2),draw(0) {
     std::vector<Card> cards;
     for (int i = 1; i <= 13; i++) {
         cards.push_back(Card(Suit::HEARTS, static_cast<Rank>(i)));
@@ -35,10 +35,10 @@ Game::Game(Player& p1ayer1, Player& player2) : player1(p1ayer1), player2(player2
 
 void Game::playTurn() {
     if (&player1 == &player2) {
-        throw std::runtime_error("Player cannot play against himself.");
+        throw std::invalid_argument("Player cannot play against himself.");
     }
     if (player1.stacksize() == 0 || player2.stacksize() == 0) {
-        throw std::runtime_error("Player has no more cards to play.");
+        throw std::invalid_argument("Player has no more cards to play.");
     }
         Card card1 = player1.removeCard();
         Card card2 = player2.removeCard();
@@ -52,8 +52,10 @@ void Game::playTurn() {
             player2.addCards({card1, card2});
         }
         else {
+            draw++;
             std::vector<Card> pile = {card1, card2};
          while (card1 == card2 && player1.stacksize() > 0 && player2.stacksize() > 0) {
+            // total_turns++;
              pile.push_back(player1.removeCard());
              pile.push_back(player2.removeCard());
              card1 = player1.removeCard();
@@ -115,17 +117,21 @@ void Game::printLastTurn() const {
 void Game::printStats() const {
     int totalTurns = log.size();
     int totalCardsTaken = player1.cardesTaken() + player2.cardesTaken();
-
+    double draw_rate = (double)draw * 2;
 
     // Print player stats
     std::cout << player1.getName() << ":" << std::endl;
     std::cout << "  Win rate: " << (player1.cardesTaken() * 100.0 / totalCardsTaken) << "%" << std::endl;
-    std::cout << "  Cards won: " << player1.cardesTaken() << std::endl;
+    std::cout << "  Cards won: " << player1.cardesTaken()  << std::endl;
    
 
     std::cout << player2.getName() << ":" << std::endl;
     std::cout << "  Win rate: " << (player2.cardesTaken() * 100.0 / totalCardsTaken) << "%" << std::endl;
     std::cout << "  Cards won: " << player2.cardesTaken() << std::endl;
+
+    std::cout << "Draw rate: " << draw_rate * 100 / totalCardsTaken << "%" << std::endl;
+    std::cout << "Number of draws: " << draw << "\n";
+
  
 }
 
