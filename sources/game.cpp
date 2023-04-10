@@ -18,9 +18,10 @@ Game::Game(Player& p1ayer1, Player& player2) : player1(p1ayer1), player2(player2
     }
 
     std::random_device rd;
-    std::mt19937 g(rd());
+    std::default_random_engine g(rd());
     std::shuffle(cards.begin(), cards.end(), g);
     deck = std::deque<Card>(cards.begin(), cards.end());
+
 
     // deal cards to players
     for (int i = 0; i < 26; i++) {
@@ -85,11 +86,11 @@ void Game::playAll() {
 
 
 void Game::printWiner() const {
-    int p1StackSize = player1.stacksize();
-    int p2StackSize = player2.stacksize();
-    if (p1StackSize > p2StackSize) {
+    int p1cardsTaken = player1.cardesTaken();
+    int p2cardsTaken = player2.cardesTaken();
+    if (p1cardsTaken > p2cardsTaken) {
         std::cout << player1.getName() << " wins!" << std::endl;
-    } else if (p2StackSize > p1StackSize) {
+    } else if (p2cardsTaken > p1cardsTaken) {
         std::cout << player2.getName() << " wins!" << std::endl;
     } else {
         std::cout << "It's a tie!" << std::endl;
@@ -112,9 +113,23 @@ void Game::printLastTurn() const {
 }
 
 void Game::printStats() const {
-    std::cout << "Total number of turns played: " << log.size() << std::endl;
-    std::cout << "Total number of cards taken: " << player1.cardesTaken() + player2.cardesTaken() << std::endl;
+    int totalTurns = log.size();
+    int totalCardsTaken = player1.cardesTaken() + player2.cardesTaken();
+
+
+    // Print player stats
+    std::cout << player1.getName() << ":" << std::endl;
+    std::cout << "  Win rate: " << (player1.cardesTaken() * 100.0 / totalCardsTaken) << "%" << std::endl;
+    std::cout << "  Cards won: " << player1.cardesTaken() << std::endl;
+   
+
+    std::cout << player2.getName() << ":" << std::endl;
+    std::cout << "  Win rate: " << (player2.cardesTaken() * 100.0 / totalCardsTaken) << "%" << std::endl;
+    std::cout << "  Cards won: " << player2.cardesTaken() << std::endl;
+ 
 }
+
+
 
 void Game::printPlayerStats() const {
     std::cout << player1.getName() << " has " << player1.stacksize() << " cards left" << std::endl;
