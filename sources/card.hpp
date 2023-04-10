@@ -14,8 +14,7 @@ enum class Suit {
 };
 
 enum class Rank{
-    ACE = 1,
-    TWO,
+    TWO = 2,
     THREE,
     FOUR,
     FIVE,
@@ -26,7 +25,8 @@ enum class Rank{
     TEN,
     JACK,
     QUEEN,
-    KING
+    KING,
+    ACE
 };
 
     class Card {
@@ -38,7 +38,14 @@ enum class Rank{
             bool operator>(const Card& other) const;
             bool operator<(const Card& other) const;
             bool operator==(const Card& other) const;
+            /*
+            the friend keyword is used to give a non-member 
+            function or class access to the private and protected members of another class
+            the operator<< function needs to access the private members
+            suit_ and rank_ in order to generate the output string 
+            */
             friend std::ostream& operator<<(std::ostream& outputStream, const Card& card);
+
      private:
            Suit suit_;
            Rank rank_;

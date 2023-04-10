@@ -104,6 +104,10 @@ bool Card::operator==(const Card& other) const {
     return this->rank_ == other.rank_;
 }
 
+/* 
+the std::ostream& operator<< function allows us to output a 
+Card object to an output stream (like cout) in a convenient way.
+*/
 std::ostream& operator<<(std::ostream& outputStream, const Card& card) {
     outputStream << card.toString();
     return outputStream;

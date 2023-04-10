@@ -37,7 +37,11 @@ Card Player::removeCard() {
 
 
 void Player::addCards(const std::vector<Card>& cards) {
-    cardsTaken.insert(cardsTaken.end(), cards.begin(), cards.end());
+    for (const Card& card : cards) {
+        cardsTaken.push_back(card);
+    }
 }
+
+
 
 }
