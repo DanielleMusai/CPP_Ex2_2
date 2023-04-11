@@ -18,8 +18,8 @@ Game::Game(Player& p1, Player& p2) : player1(p1), player2(p2),draw(0) {
     }
 
     std::random_device rd;
-    std::default_random_engine g(rd());
-    std::shuffle(cards.begin(), cards.end(), g);
+    std::default_random_engine g_(rd());
+    std::shuffle(cards.begin(), cards.end(), g_);
     deck = std::deque<Card>(cards.begin(), cards.end());
 
 
@@ -35,44 +35,61 @@ Game::Game(Player& p1, Player& p2) : player1(p1), player2(p2),draw(0) {
 
 void Game::playTurn() {
     if (&player1 == &player2) {
-        throw std::invalid_argument("Player cannot play against himself.");
+        throw std::invalid_argument("Player cannot play against himself");
     }
     if (player1.stacksize() == 0 || player2.stacksize() == 0) {
-        throw std::invalid_argument("Player has no more cards to play.");
+        throw std::invalid_argument("Player has no more cards to play");
     }
-        Card card1 = player1.removeCard();
-        Card card2 = player2.removeCard();
-
-        log.push_back(std::make_pair(card1, card2));
-
-        if (card1 > card2) {
-            player1.addCards({card1, card2});
-        }
-        else if (card2 > card1) {
-            player2.addCards({card1, card2});
-        }
-        else {
+    
+    Card card1 = player1.removeCard();
+    Card card2 = player2.removeCard();
+    log.push_back(std::make_pair(card1, card2));
+    
+    if (card1 > card2) {
+        player1.addCards({card1, card2});
+    } else if (card2 > card1) {
+        player2.addCards({card1, card2});
+    } else {
+        std::vector<Card> pair = {card1, card2};
+        while (card1 == card2) {
+            if (player1.stacksize() == 0 || player2.stacksize() == 0) {
+                break;
+            }
             draw++;
-            std::vector<Card> pile = {card1, card2};
-         while (card1 == card2 && player1.stacksize() > 0 && player2.stacksize() > 0) {
-            // total_turns++;
-             pile.push_back(player1.removeCard());
-             pile.push_back(player2.removeCard());
-             card1 = player1.removeCard();
-             card2 = player2.removeCard();
-             pile.push_back(card1);
-            pile.push_back(card2);
-}
-
-            if (card1 > card2) {
-                player1.addCards(pile);
+            pair.push_back(player1.removeCard());
+            pair.push_back(player2.removeCard());
+            if (player1.stacksize() == 0 || player2.stacksize() == 0) {
+                break;
             }
-            else if (card2 > card1) {
-                player2.addCards(pile);
+            card1 = player1.removeCard();
+            card2 = player2.removeCard();
+            pair.push_back(card1);
+            pair.push_back(card2);
+        }
+        if (card1 > card2) {
+            player1.addCards(pair);
+        } else if (card2 > card1) {
+            player2.addCards(pair);
+        } else {
+            // Cards ran out during tie, deal remaining cards
+            while (player1.stacksize() > 0 && player2.stacksize() > 0) {
+                draw++;
+                pair.push_back(player1.removeCard());
+                pair.push_back(player2.removeCard());
+            }
+            if (player1.stacksize() > player2.stacksize()) {
+                player1.addCards(pair);
+            } else if (player2.stacksize() > player1.stacksize()) {
+                player2.addCards(pair);
+            } else {
+                // Both players have the same number of cards, split the pot
+                player1.addCards(pair);
+                player2.addCards(pair);
             }
         }
-
+    }
 }
+
 
 
 void Game::playAll() {
@@ -91,11 +108,11 @@ void Game::printWiner() const {
     int p1cardsTaken = player1.cardesTaken();
     int p2cardsTaken = player2.cardesTaken();
     if (p1cardsTaken > p2cardsTaken) {
-        std::cout << player1.getName() << " wins!" << std::endl;
+        std::cout << player1.getName() << " Wins!" << std::endl;
     } else if (p2cardsTaken > p1cardsTaken) {
-        std::cout << player2.getName() << " wins!" << std::endl;
+        std::cout << player2.getName() << " Wins!" << std::endl;
     } else {
-        std::cout << "It's a tie!" << std::endl;
+        std::cout << "Its a tie!" << std::endl;
     }
 }
 
@@ -103,7 +120,9 @@ void Game::printWiner() const {
 
 
 void Game::printLog() const {
+    //int i = 0;
     for (auto& turn : log) {
+        //std::cout << i++ << std::endl;
         std::cout << player1.getName() << " played " << turn.first.toString() << std::endl;
         std::cout << player2.getName() << " played " << turn.second.toString() << std::endl;
     }
@@ -111,7 +130,7 @@ void Game::printLog() const {
 
 void Game::printLastTurn() const {
     auto lastPair = log.back();
-    std::cout << lastPair.first.toString() << " vs. " << lastPair.second.toString() << std::endl;
+    std::cout << lastPair.first.toString() << " VS. " << lastPair.second.toString() << std::endl;
 }
 
 void Game::printStats() const {
