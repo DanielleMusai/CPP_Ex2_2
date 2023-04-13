@@ -27,7 +27,7 @@ void Player::addCard(const Card& card) {
 
 Card Player::removeCard() {
     if (stack.empty()) {
-        throw std::runtime_error("Player has no more cards to play");
+        throw std::runtime_error("Player has no more cards to play with");
     }
     Card card = stack.back();
     stack.pop_back();

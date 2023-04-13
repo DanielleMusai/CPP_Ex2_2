@@ -19,11 +19,9 @@ Game::Game(Player& p1, Player& p2) : player1(p1), player2(p2),draw(0) {
 
     std::random_device rd;
     std::default_random_engine g_(rd());
-    std::shuffle(cards.begin(), cards.end(), g_);
+    std::shuffle(cards.begin(), cards.end(), g_); // taking from the internet 
     deck = std::deque<Card>(cards.begin(), cards.end());
 
-
-    // deal cards to players
     for (int i = 0; i < 26; i++) {
         player1.addCard(deck.front());
         deck.pop_front();
@@ -38,7 +36,7 @@ void Game::playTurn() {
         throw std::invalid_argument("Player cannot play against himself");
     }
     if (player1.stacksize() == 0 || player2.stacksize() == 0) {
-        throw std::invalid_argument("Player has no more cards to play");
+        throw std::invalid_argument("Player has no more cards to play with");
     }
     
     Card card1 = player1.removeCard();
@@ -63,6 +61,23 @@ void Game::playTurn() {
             }
             card1 = player1.removeCard();
             card2 = player2.removeCard();
+            if (card1 == card2) {
+             /*
+             players draw identical cards, place one card face down and another card on top of it.
+             The high card player takes all six cards
+             */
+                draw++;
+                pair.push_back(card1);
+                pair.push_back(card2);
+                pair.push_back(player1.removeCard());
+                pair.push_back(player2.removeCard());
+                if (card1 > card2) {
+                    player1.addCards(pair);
+                } else {
+                    player2.addCards(pair);
+                }
+                break;
+            }
             pair.push_back(card1);
             pair.push_back(card2);
         }
@@ -71,24 +86,13 @@ void Game::playTurn() {
         } else if (card2 > card1) {
             player2.addCards(pair);
         } else {
-            // Cards ran out during tie, deal remaining cards
-            while (player1.stacksize() > 0 && player2.stacksize() > 0) {
-                draw++;
-                pair.push_back(player1.removeCard());
-                pair.push_back(player2.removeCard());
-            }
-            if (player1.stacksize() > player2.stacksize()) {
-                player1.addCards(pair);
-            } else if (player2.stacksize() > player1.stacksize()) {
-                player2.addCards(pair);
-            } else {
-                // Both players have the same number of cards, split the pot
-                player1.addCards(pair);
-                player2.addCards(pair);
-            }
+            // both players have run out of cards while breaking a tie, split the pot
+            player1.addCards(pair);
+            player2.addCards(pair);
         }
     }
 }
+
 
 
 
